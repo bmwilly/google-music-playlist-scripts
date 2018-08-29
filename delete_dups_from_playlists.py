@@ -1,6 +1,12 @@
 #!/usr/bin/env python
-from gmusicapi import Mobileclient
+
+import os
 import sys
+
+from gmusicapi import Mobileclient
+
+USERNAME = os.environ['GOOGLE_USER']
+PASSWORD = os.environ['GOOGLE_PW']
 
 
 # TODO remove this unused function, previously used to return tracks from a given playlist
@@ -10,7 +16,9 @@ def get_playlist_tracks(name, playlists):
             tracks = playlist['tracks']
             return tracks
     print "ERROR: No playlist '" + name + "'found"
+
     exit(1)
+
 
 def find_and_remove_dups(api, tracks):
     track_set = set()
@@ -19,7 +27,7 @@ def find_and_remove_dups(api, tracks):
         entryId = track['id']
         if trackId in track_set:
             print "    found duplicate with trackId: " + trackId + ", deleting"
-            api.remove_entries_from_playlist(entryId)
+            # api.remove_entries_from_playlist(entryId)
         else:
             track_set.add(trackId)
 
@@ -32,7 +40,7 @@ if len(sys.argv) != 1:
     exit(0)
 
 api = Mobileclient()
-logged_in = api.login('username', 'password', Mobileclient.FROM_MAC_ADDRESS)
+logged_in = api.login(USERNAME, PASSWORD, Mobileclient.FROM_MAC_ADDRESS)
 
 if logged_in:
     print "Successfully logged in. Finding duplicates in playlists"
